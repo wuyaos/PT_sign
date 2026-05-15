@@ -31,11 +31,37 @@ ql repo https://github.com/wuyaos/ql-ck.git
 }
 ```
 
+站点值为空字符串或 `null` 时从 CookieCloud 获取；非空字符串则直接使用该 Cookie。
+
+---
+
+## 思源笔记签到 (`ck_siyuan.py`)
+
+登录 ld246.com 并完成每日签到，获取积分和排行信息。
+
+环境变量：`SIYUAN_USERNAME`、`SIYUAN_PASSWORD`
+
+---
+
+## WPS 签到 (`ck_wps.py`)
+
+WPS 会员每日签到。
+
+环境变量：`WPS_COOKIE`
+
+---
+
+## 恩山论坛签到 (`ck_enshan.py`)
+
+恩山论坛每日签到，返回用户积分和最后签到时间。
+
+环境变量：`COOKIE_ENSHAN`
+
 ---
 
 ## AnimeZ 保活 (`az_keepalive.py`)
 
-从 AnimeZ 私有 RSS 选取体积最小的种子提交到 qBittorrent，满足"90 天内至少下载一个种子"的保活要求。
+从 AnimeZ 私有 RSS 选取体积最小的种子提交到 qBittorrent，满足"90 天内至少下载一个种子"的保活要求。每周日 03:17 运行，距上次成功超过 75 天才触发实际下载。
 
 ```json
 {
@@ -50,6 +76,20 @@ ql repo https://github.com/wuyaos/ql-ck.git
 }
 ```
 
-依赖：`requests`, `feedparser`, `torf`
+依赖：`requests`、`feedparser`、`torf`
 
 ---
+
+## 青龙备份 (`ins_qinglong_backup.py`)
+
+每日凌晨 2 点将青龙数据目录打包为 `.tar.gz`，保留最近 N 份（默认 5）。
+
+可选环境变量：`QLBK_BACKUPS_PATH`、`QLBK_MAX_FLIES`、`QLBK_EXCLUDE_NAMES`
+
+---
+
+## 批量删除任务 (`ins_qinglong_task_delete.py`)
+
+按名称前缀批量删除青龙任务及其脚本文件，手动触发。
+
+环境变量：`DELETE_NAME`（支持 `&` 分隔多个前缀）、`IPPORT`（默认 `localhost:5700`）
