@@ -2,36 +2,54 @@ ql repo https://github.com/wuyaos/ql-ck.git
 
 ---
 
-## 通用PT站签到脚本 (`pt_checkin.py`)
+## 脚本列表
 
-这是一个用于自动签到多个PT站点的通用脚本。
+| 文件 | 功能 | cron | 环境变量 |
+| --- | --- | --- | --- |
+| `ck_ptsite.py` | PT多站签到（GGPT/HDtime/siqi），支持 CookieCloud | `0 10,16,22 * * *` | `PT_CHECKIN_CONFIG` |
+| `ck_siyuan.py` | 思源笔记社区 (ld246.com) 签到 | `0 10 0 * * *` | `SIYUAN_USERNAME` / `SIYUAN_PASSWORD` |
+| `ck_wps.py` | WPS 会员签到 | `12 6 * * *` | `WPS_COOKIE` |
+| `ck_enshan.py` | 恩山论坛签到 | `1 0 * * *` | `COOKIE_ENSHAN` |
+| `az_keepalive.py` | AnimeZ 保活（RSS 选种提交 qBittorrent） | `17 3 * * 0` | `AZ_KEEPALIVE_CONFIG` |
+| `ins_qinglong_backup.py` | 青龙面板数据备份 | `0 2 * * *` | `QLBK_*` |
+| `ins_qinglong_task_delete.py` | 批量删除青龙任务 | 手动 | `DELETE_NAME` / `IPPORT` |
 
-### 功能
+---
 
-*   **模块化**: 轻松添加和管理多个PT站点。
-*   **统一配置**: 使用单个环境变量 `PT_COOKIES` 管理所有站点的Cookie。
-*   **日志输出**: 提供带时间和表情符号的友好日志。
-*   **自动通知**: 通过`notify.send`发送签到结果。
+## PT多站签到 (`ck_ptsite.py`)
 
-### 如何使用
+通过单一环境变量 `PT_CHECKIN_CONFIG`（JSON）配置，支持直接填 Cookie 或从 CookieCloud 自动获取。
 
-1.  **配置站点**:
-    打开 `pt_checkin.py` 文件，在 `SITES_CONFIG` 列表中添加或修改你的PT站点信息。
+```json
+{
+  "cookie_cloud": { "url": "...", "uuid": "...", "password": "..." },
+  "sites": {
+    "GGPT": "",
+    "HDtime": null,
+    "siqi": "uid=789; pass=xyz;"
+  }
+}
+```
 
-2.  **设置环境变量**:
-    在你的运行环境中（例如青龙面板），添加一个名为 `PT_COOKIES` 的环境变量。这个变量的值需要是 **JSON 格式的字符串**。
+---
 
-    **`PT_COOKIES` 格式示例:**
-    ```json
-    {
-      "GGPT": "uid=xxxx; pass=xxxx; ......",
-      "HDtime": "uid=yyyy; pass=yyyy; ......"
-    }
-    ```
-    *   **键 (Key)**: 必须与 `SITES_CONFIG` 中配置的 `site_name` 完全一致。
-    *   **值 (Value)**: 是对应站点的完整Cookie字符串。
+## AnimeZ 保活 (`az_keepalive.py`)
 
-3.  **运行脚本**:
-    直接运行 `pt_checkin.py` 脚本。
+从 AnimeZ 私有 RSS 选取体积最小的种子提交到 qBittorrent，满足"90 天内至少下载一个种子"的保活要求。
+
+```json
+{
+  "rss_url": "https://animez.to/YOUR_PRIVATE_RSS_URL",
+  "qbittorrent": {
+    "url": "http://127.0.0.1:8080",
+    "username": "admin",
+    "password": "adminadmin",
+    "category": "AnimeZ",
+    "tags": "keepalive"
+  }
+}
+```
+
+依赖：`requests`, `feedparser`, `torf`
 
 ---
