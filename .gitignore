@@ -7,3 +7,4 @@ augment.config.json
 .augment.json
 *.augment
 .augment-*
+.omc/
